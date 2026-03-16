@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dual-Path Inference · M5 Air</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0e14;
+    --bg2: #0f1319;
+    --bg3: #141a22;
+    --border: #1a2332;
+    --border-bright: #2a3a4d;
+    --cyan: #00e5ff;
+    --cyan-dim: #00e5ff44;
+    --green: #00ff88;
+    --green-dim: #00ff8844;
+    --orange: #ff9100;
+    --orange-dim: #ff910044;
+    --red: #ff3d3d;
+    --pink: #ff47a0;
+    --purple: #b388ff;
+    --text: #c8d6e5;
+    --text-dim: #6b7d8f;
+    --text-bright: #e8f0f8;
+    --gpu-color: #00e5ff;
+    --ane-color: #00ff88;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .header {
+    text-align: center;
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .header h1 {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 28px;
+    letter-spacing: 6px;
+    color: var(--cyan);
+    text-shadow: 0 0 20px var(--cyan-dim), 0 0 40px rgba(0,229,255,0.1);
+  }
+  .header .subtitle {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    margin-top: 4px;
+  }
+  .header .status-dot {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+  }
+  .header .status-dot.running {
+    animation: pulse-dot 1s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--orange); background: var(--orange); }
+    50% { opacity: 0.5; box-shadow: 0 0 16px var(--orange); }
+  }
+
+  /* Silicon Diagram */
+  .silicon-section {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  .chip-diagram {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 30px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+  }
+  .chip-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 18px;
+    color: var(--text-dim);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    letter-spacing: 4px;
+  }
+  .chip-blocks {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .chip-block {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-align: center;
+    min-width: 120px;
+    transition: all 0.3s;
+  }
+  .chip-block.gpu { border-color: var(--gpu-color); }
+  .chip-block.ane { border-color: var(--ane-color); }
+  .chip-block.active {
+    box-shadow: 0 0 20px var(--cyan-dim);
+  }
+  .chip-block.gpu.active {
+    background: rgba(0,229,255,0.05);
+    box-shadow: 0 0 20px var(--cyan-dim);
+  }
+  .chip-block.ane.active {
+    background: rgba(0,255,136,0.05);
+    box-shadow: 0 0 20px var(--green-dim);
+  }
+  .chip-block .block-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .chip-block .block-value {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .chip-block.gpu .block-value { color: var(--gpu-color); }
+  .chip-block.ane .block-value { color: var(--ane-color); }
+  .chip-block .block-detail {
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .chip-connector {
+    font-size: 10px;
+    color: var(--text-dim);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .chip-connector .mem-bar {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gpu-color), var(--ane-color));
+    border-radius: 2px;
+    opacity: 0.4;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 20px;
+  }
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 20px;
+    border: 1px solid var(--border-bright);
+    background: var(--bg2);
+    color: var(--text);
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .btn:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 12px var(--cyan-dim);
+  }
+  .btn.primary {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(0,229,255,0.08);
+  }
+  .btn.primary:hover {
+    background: rgba(0,229,255,0.15);
+  }
+  .btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  .prompt-select {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 8px 12px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    max-width: 400px;
+  }
+
+  /* Phase Banner */
+  .phase-banner {
+    text-align: center;
+    padding: 8px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    display: none;
+  }
+  .phase-banner.active {
+    display: block;
+    color: var(--orange);
+    animation: phase-glow 2s infinite;
+  }
+  @keyframes phase-glow {
+    0%, 100% { text-shadow: none; }
+    50% { text-shadow: 0 0 10px var(--orange-dim); }
+  }
+
+  /* Dual Panels */
+  .dual-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px 20px;
+  }
+  .panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .panel.gpu { border-top: 2px solid var(--gpu-color); }
+  .panel.ane { border-top: 2px solid var(--ane-color); }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-header .path-name {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+  }
+  .panel.gpu .path-name { color: var(--gpu-color); }
+  .panel.ane .path-name { color: var(--ane-color); }
+  .panel-header .model-name {
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .panel-header .status-badge {
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 1px;
+  }
+  .status-badge.idle { border: 1px solid var(--border); color: var(--text-dim); }
+  .status-badge.running { border: 1px solid var(--orange); color: var(--orange); animation: pulse-badge 1s infinite; }
+  .status-badge.done { border: 1px solid var(--green); color: var(--green); }
+  .status-badge.error { border: 1px solid var(--red); color: var(--red); }
+  @keyframes pulse-badge { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  /* Metrics Row */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .metric {
+    background: var(--bg2);
+    padding: 12px;
+    text-align: center;
+  }
+  .metric .metric-value {
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .panel.gpu .metric-value { color: var(--gpu-color); }
+  .panel.ane .metric-value { color: var(--ane-color); }
+  .metric .metric-label {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+  .metric .metric-compare {
+    font-size: 9px;
+    margin-top: 2px;
+  }
+  .metric .metric-compare.positive { color: var(--green); }
+  .metric .metric-compare.negative { color: var(--red); }
+  .metric .metric-compare.neutral { color: var(--text-dim); }
+
+  /* Response Area */
+  .response-area {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .response-area .response-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .response-area .response-text {
+    font-size: 11px;
+    color: var(--text);
+    line-height: 1.5;
+    max-height: 120px;
+    overflow-y: auto;
+    padding: 8px;
+    background: var(--bg);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .response-text::-webkit-scrollbar { width: 4px; }
+  .response-text::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+  /* Comparison Section */
+  .comparison-section {
+    padding: 16px 20px;
+  }
+  .comparison-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .comparison-card h3 {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  /* Bar Chart */
+  .bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .bar-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bar-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    width: 100px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .bar-container {
+    flex: 1;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .bar {
+    height: 24px;
+    border-radius: 4px;
+    transition: width 1s ease-out;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 0;
+  }
+  .bar.gpu-solo { background: rgba(0,229,255,0.2); border: 1px solid var(--gpu-color); color: var(--gpu-color); }
+  .bar.gpu-conc { background: rgba(0,229,255,0.35); border: 1px solid var(--gpu-color); color: var(--gpu-color); }
+  .bar.ane-solo { background: rgba(0,255,136,0.2); border: 1px solid var(--ane-color); color: var(--ane-color); }
+  .bar.ane-conc { background: rgba(0,255,136,0.35); border: 1px solid var(--ane-color); color: var(--ane-color); }
+  .bar-delta {
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 60px;
+    text-align: right;
+  }
+
+  /* Verdict */
+  .verdict {
+    text-align: center;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-top: 16px;
+  }
+  .verdict .verdict-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+  .verdict .verdict-text {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+  }
+  .verdict.confirmed { border-color: var(--green); }
+  .verdict.confirmed .verdict-text { color: var(--green); text-shadow: 0 0 10px var(--green-dim); }
+  .verdict.rejected { border-color: var(--red); }
+  .verdict.rejected .verdict-text { color: var(--red); }
+  .verdict.partial { border-color: var(--orange); }
+  .verdict.partial .verdict-text { color: var(--orange); }
+  .verdict .verdict-detail {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  /* Run History */
+  .history-section {
+    padding: 0 20px 20px;
+  }
+  .history-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .history-card h3 {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .history-table {
+    width: 100%;
+    font-size: 10px;
+    border-collapse: collapse;
+  }
+  .history-table th {
+    text-align: left;
+    padding: 6px 8px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+  .history-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .history-table .gpu-val { color: var(--gpu-color); }
+  .history-table .ane-val { color: var(--ane-color); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    border-top: 1px solid var(--border);
+  }
+  .footer a {
+    color: var(--cyan);
+    text-decoration: none;
+  }
+
+  /* Activity Log */
+  .log-section {
+    padding: 0 20px 16px;
+  }
+  .log-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+  .log-card::-webkit-scrollbar { width: 4px; }
+  .log-card::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+  .log-entry {
+    font-size: 10px;
+    padding: 3px 0;
+    color: var(--text-dim);
+    border-bottom: 1px solid rgba(26,35,50,0.5);
+  }
+  .log-entry .log-time { color: var(--text-dim); margin-right: 8px; }
+  .log-entry .log-gpu { color: var(--gpu-color); }
+  .log-entry .log-ane { color: var(--ane-color); }
+  .log-entry .log-ok { color: var(--green); }
+  .log-entry .log-warn { color: var(--orange); }
+  .log-entry .log-err { color: var(--red); }
+
+  /* Timeline */
+  .timeline-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .timeline-row:last-child { margin-bottom: 0; }
+  .timeline-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    width: 50px;
+    flex-shrink: 0;
+    text-align: right;
+    padding-right: 12px;
+  }
+  .timeline-label.gpu { color: var(--gpu-color); }
+  .timeline-label.ane { color: var(--ane-color); }
+  .timeline-track {
+    flex: 1;
+    display: flex;
+    gap: 6px;
+    height: 28px;
+    position: relative;
+  }
+  .timeline-phase-group {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .timeline-bar-bg {
+    width: 100%;
+    height: 28px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .timeline-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-weight: 600;
+    transition: width 0.8s ease-out;
+    white-space: nowrap;
+  }
+  .timeline-bar-fill.gpu { background: rgba(0,229,255,0.25); color: var(--gpu-color); }
+  .timeline-bar-fill.ane { background: rgba(0,255,136,0.25); color: var(--ane-color); }
+  @keyframes timeline-slide {
+    from { width: 0; }
+  }
+  .timeline-bar-fill.animate { animation: timeline-slide 0.8s ease-out; }
+  .timeline-phase-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-align: center;
+    padding-top: 4px;
+  }
+
+  /* Performance Breakdown */
+  .breakdown-col {
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .breakdown-col h4 {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .breakdown-col h4.gpu { color: var(--gpu-color); }
+  .breakdown-col h4.ane { color: var(--ane-color); }
+  .breakdown-col h4.eff { color: var(--orange); }
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 11px;
+  }
+  .breakdown-row .bd-label {
+    color: var(--text-dim);
+    font-size: 10px;
+  }
+  .breakdown-row .bd-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .breakdown-row .bd-value.gpu { color: var(--gpu-color); }
+  .breakdown-row .bd-value.ane { color: var(--ane-color); }
+  .breakdown-row .bd-value.eff { color: var(--orange); }
+  .ane-prefill-bar {
+    margin-top: 8px;
+    display: flex;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+  }
+  .ane-prefill-bar .prefill-seg {
+    background: rgba(0,255,136,0.5);
+    transition: width 0.6s ease-out;
+  }
+  .ane-prefill-bar .decode-seg {
+    background: rgba(0,255,136,0.2);
+    transition: width 0.6s ease-out;
+  }
+  .ane-bar-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .dual-panels { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>DUAL-PATH INFERENCE</h1>
+  <div class="subtitle">GPU + NEURAL ENGINE · APPLE M5 AIR · 16GB UNIFIED MEMORY</div>
+  <div class="status-dot" id="statusDot"></div>
+</div>
+
+<!-- Silicon Diagram -->
+<div class="silicon-section">
+  <div class="chip-diagram">
+    <div class="chip-label">M 5</div>
+    <div class="chip-blocks">
+      <div class="chip-block gpu" id="chipGpu">
+        <div class="block-title">GPU CORES</div>
+        <div class="block-value">10 cores</div>
+        <div class="block-detail">MLX · Qwen 3.5 9B</div>
+      </div>
+      <div class="chip-connector">
+        <div class="mem-bar"></div>
+        <span>UNIFIED MEM</span>
+        <div class="mem-bar"></div>
+      </div>
+      <div class="chip-block ane" id="chipAne">
+        <div class="block-title">NEURAL ENGINE</div>
+        <div class="block-value">16 cores</div>
+        <div class="block-detail">CoreML · Qwen 0.5B</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <select class="prompt-select" id="aneModelSelect" onchange="switchAneModel(this.value)" style="max-width:200px;">
+    <option value="qwen-0.5b">ANE: Qwen 0.5B</option>
+    <option value="llama-1b" selected>ANE: Llama 1B</option>
+    <option value="qwen-3b">ANE: Qwen 3B</option>
+  </select>
+  <select class="prompt-select" id="promptSelect">
+    <option value="0">ISDA Master Agreement & OTC derivatives</option>
+    <option value="1">Netting in derivatives contracts</option>
+    <option value="2">Credit Support Annex & collateral</option>
+  </select>
+  <button class="btn primary" id="btnRun" onclick="runTest()">▶ RUN TEST</button>
+  <button class="btn" id="btnMulti" onclick="runMulti()">▶▶ RUN ALL 3</button>
+</div>
+
+<!-- Phase Banner -->
+<div class="phase-banner" id="phaseBanner"></div>
+
+<!-- Dual Panels -->
+<div class="dual-panels">
+  <!-- GPU Panel -->
+  <div class="panel gpu">
+    <div class="panel-header">
+      <div>
+        <div class="path-name">PATH A · GPU</div>
+        <div class="model-name">Qwen 3.5 9B · MLX · 4-bit</div>
+      </div>
+      <span class="status-badge idle" id="gpuStatus">IDLE</span>
+    </div>
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-value" id="gpuTps">—</div>
+        <div class="metric-label">TOK/S</div>
+        <div class="metric-compare neutral" id="gpuTpsDelta"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" id="gpuTime">—</div>
+        <div class="metric-label">SECONDS</div>
+        <div class="metric-compare neutral" id="gpuTimeDelta"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" id="gpuTokens">—</div>
+        <div class="metric-label">TOKENS</div>
+        <div class="metric-compare neutral" id="gpuTokensDelta"></div>
+      </div>
+    </div>
+    <div class="response-area">
+      <div class="response-label">RESPONSE</div>
+      <div class="response-text" id="gpuResponse">Waiting for test...</div>
+    </div>
+  </div>
+
+  <!-- ANE Panel -->
+  <div class="panel ane">
+    <div class="panel-header">
+      <div>
+        <div class="path-name">PATH B · NEURAL ENGINE</div>
+        <div class="model-name">Qwen 2.5 0.5B · CoreML · ANE</div>
+      </div>
+      <span class="status-badge idle" id="aneStatus">IDLE</span>
+    </div>
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-value" id="aneTps">—</div>
+        <div class="metric-label">TOK/S</div>
+        <div class="metric-compare neutral" id="aneTpsDelta"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" id="aneTime">—</div>
+        <div class="metric-label">SECONDS</div>
+        <div class="metric-compare neutral" id="aneTimeDelta"></div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" id="aneTokens">—</div>
+        <div class="metric-label">TOKENS</div>
+        <div class="metric-compare neutral" id="aneTokensDelta"></div>
+      </div>
+    </div>
+    <div class="response-area">
+      <div class="response-label">RESPONSE</div>
+      <div class="response-text" id="aneResponse">Waiting for test...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Activity Log -->
+<div class="log-section">
+  <div class="log-card" id="logCard">
+    <div class="log-entry"><span class="log-time">--:--:--</span> System ready. Select a prompt and hit RUN TEST.</div>
+  </div>
+</div>
+
+<!-- Execution Timeline -->
+<div class="timeline-section" style="padding: 0 20px 16px;">
+  <div class="timeline-card" id="timelineCard" style="display:none; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+    <h3 style="font-size: 11px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 16px; text-align: center;">EXECUTION TIMELINE</h3>
+    <div id="timelineChart"></div>
+  </div>
+</div>
+
+<!-- Comparison -->
+<div class="comparison-section">
+  <div class="comparison-card" id="comparisonCard" style="display:none;">
+    <h3>SOLO vs CONCURRENT — THROUGHPUT COMPARISON</h3>
+    <div class="bar-chart" id="barChart"></div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+</div>
+
+<!-- Performance Breakdown -->
+<div class="breakdown-section" style="padding: 0 20px 16px;">
+  <div class="breakdown-card" id="breakdownCard" style="display:none; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px;">
+    <h3 style="font-size: 11px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 16px; text-align: center;">PERFORMANCE BREAKDOWN</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;" id="breakdownGrid"></div>
+  </div>
+</div>
+
+<!-- Run History -->
+<div class="history-section">
+  <div class="history-card" id="historyCard" style="display:none;">
+    <h3>RUN HISTORY</h3>
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>PROMPT</th>
+          <th>GPU SOLO</th>
+          <th>GPU CONC</th>
+          <th>Δ</th>
+          <th>ANE SOLO</th>
+          <th>ANE CONC</th>
+          <th>Δ</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="footer">
+  DUAL-PATH INFERENCE · <a href="https://github.com/Anemll/Anemll" target="_blank">ANEMLL</a> + <a href="https://github.com/ml-explore/mlx" target="_blank">MLX</a> · 2026
+</div>
+
+<script>
+let ws;
+let soloData = { mlx: null, ane: null };
+let concData = { mlx: null, ane: null };
+let running = false;
+let testStartTime = null;
+let timestamps = {};
+
+function connect() {
+  ws = new WebSocket(`ws://${location.host}/ws`);
+  ws.onopen = () => log('WebSocket connected', 'ok');
+  ws.onclose = () => { log('WebSocket disconnected', 'err'); setTimeout(connect, 2000); };
+  ws.onmessage = (e) => handleMessage(JSON.parse(e.data));
+}
+
+function handleMessage(msg) {
+  switch (msg.type) {
+    case 'test_start':
+      running = true;
+      testStartTime = Date.now();
+      timestamps = {};
+      document.getElementById('statusDot').className = 'status-dot running';
+      document.getElementById('btnRun').disabled = true;
+      document.getElementById('btnMulti').disabled = true;
+      soloData = { mlx: null, ane: null };
+      concData = { mlx: null, ane: null };
+      resetPanels();
+      log(`Test started: "${msg.prompt.substring(0, 60)}..."`, 'ok');
+      break;
+
+    case 'phase':
+      const banner = document.getElementById('phaseBanner');
+      banner.textContent = msg.label;
+      banner.className = 'phase-banner active';
+      log(`Phase: ${msg.label}`, 'warn');
+      break;
+
+    case 'path_start':
+      if (msg.path === 'mlx' || msg.path === 'both') {
+        setStatus('gpuStatus', 'RUNNING', 'running');
+        document.getElementById('chipGpu').classList.add('active');
+      }
+      if (msg.path === 'ane' || msg.path === 'both') {
+        setStatus('aneStatus', 'RUNNING', 'running');
+        document.getElementById('chipAne').classList.add('active');
+      }
+      break;
+
+    case 'path_result':
+      if (msg.path === 'mlx') {
+        if (msg.mode === 'solo') {
+          soloData.mlx = msg.data;
+          timestamps.gpu_solo_end = Date.now();
+          log(`GPU solo: ${msg.data.tok_per_sec} tok/s (${msg.data.time_s}s)`, 'gpu');
+        } else {
+          concData.mlx = msg.data;
+          timestamps.gpu_conc_end = Date.now();
+          updatePanel('gpu', msg.data, soloData.mlx);
+          setStatus('gpuStatus', 'DONE', 'done');
+          document.getElementById('chipGpu').classList.remove('active');
+          log(`GPU concurrent: ${msg.data.tok_per_sec} tok/s (${msg.data.time_s}s)`, 'gpu');
+        }
+      }
+      if (msg.path === 'ane') {
+        if (msg.mode === 'solo') {
+          soloData.ane = msg.data;
+          timestamps.ane_solo_end = Date.now();
+          log(`ANE solo: ${msg.data.tok_per_sec} tok/s (${msg.data.time_s}s)`, 'ane');
+        } else {
+          concData.ane = msg.data;
+          timestamps.ane_conc_end = Date.now();
+          updatePanel('ane', msg.data, soloData.ane);
+          setStatus('aneStatus', 'DONE', 'done');
+          document.getElementById('chipAne').classList.remove('active');
+          log(`ANE concurrent: ${msg.data.tok_per_sec} tok/s (${msg.data.time_s}s)`, 'ane');
+        }
+      }
+      break;
+
+    case 'comparison':
+      showComparison(msg.data);
+      break;
+
+    case 'test_complete':
+      running = false;
+      document.getElementById('statusDot').className = 'status-dot';
+      document.getElementById('btnRun').disabled = false;
+      document.getElementById('btnMulti').disabled = false;
+      document.getElementById('phaseBanner').className = 'phase-banner';
+      showTimeline();
+      showBreakdown();
+      log('Test complete', 'ok');
+      break;
+
+    case 'multi_progress':
+      log(`Multi-prompt ${msg.current}/${msg.total}: "${msg.prompt.substring(0, 50)}..."`, 'warn');
+      break;
+
+    case 'multi_result':
+      addHistoryRow(msg.data);
+      break;
+
+    case 'multi_complete':
+      running = false;
+      document.getElementById('statusDot').className = 'status-dot';
+      document.getElementById('btnRun').disabled = false;
+      document.getElementById('btnMulti').disabled = false;
+      log('All prompts completed', 'ok');
+      break;
+  }
+}
+
+function updatePanel(path, data, soloRef) {
+  const prefix = path === 'gpu' ? 'gpu' : 'ane';
+  if (data.status === 'error') {
+    document.getElementById(`${prefix}Tps`).textContent = 'ERR';
+    document.getElementById(`${prefix}Response`).textContent = data.error;
+    setStatus(`${prefix}Status`, 'ERROR', 'error');
+    return;
+  }
+  document.getElementById(`${prefix}Tps`).textContent = data.tok_per_sec || '—';
+  document.getElementById(`${prefix}Time`).textContent = data.time_s || '—';
+  document.getElementById(`${prefix}Tokens`).textContent = data.tokens || '—';
+  document.getElementById(`${prefix}Response`).textContent = data.response || '(empty)';
+
+  // Show delta vs solo
+  if (soloRef && soloRef.tok_per_sec > 0 && data.tok_per_sec > 0) {
+    const delta = ((data.tok_per_sec - soloRef.tok_per_sec) / soloRef.tok_per_sec * 100).toFixed(1);
+    const el = document.getElementById(`${prefix}TpsDelta`);
+    el.textContent = `${delta > 0 ? '+' : ''}${delta}% vs solo`;
+    el.className = `metric-compare ${parseFloat(delta) >= -5 ? 'positive' : parseFloat(delta) >= -20 ? 'neutral' : 'negative'}`;
+  }
+}
+
+function showComparison(data) {
+  const card = document.getElementById('comparisonCard');
+  card.style.display = 'block';
+  const chart = document.getElementById('barChart');
+
+  const maxTps = Math.max(data.mlx_solo_tps, data.mlx_conc_tps, data.ane_solo_tps, data.ane_conc_tps, 1);
+
+  const mlxDelta = data.mlx_delta !== undefined ? data.mlx_delta : 0;
+  const aneDelta = data.ane_delta !== undefined ? data.ane_delta : 0;
+
+  chart.innerHTML = `
+    <div class="bar-group">
+      <div class="bar-label">GPU SOLO</div>
+      <div class="bar-container">
+        <div class="bar gpu-solo" style="width: ${(data.mlx_solo_tps / maxTps * 100).toFixed(0)}%">${data.mlx_solo_tps} t/s</div>
+      </div>
+      <div class="bar-delta" style="color:var(--text-dim)">baseline</div>
+    </div>
+    <div class="bar-group">
+      <div class="bar-label">GPU CONCURRENT</div>
+      <div class="bar-container">
+        <div class="bar gpu-conc" style="width: ${(data.mlx_conc_tps / maxTps * 100).toFixed(0)}%">${data.mlx_conc_tps} t/s</div>
+      </div>
+      <div class="bar-delta" style="color:${mlxDelta >= -5 ? 'var(--green)' : mlxDelta >= -20 ? 'var(--orange)' : 'var(--red)'}">
+        ${mlxDelta > 0 ? '+' : ''}${mlxDelta}%
+      </div>
+    </div>
+    <div style="height:8px"></div>
+    <div class="bar-group">
+      <div class="bar-label">ANE SOLO</div>
+      <div class="bar-container">
+        <div class="bar ane-solo" style="width: ${(data.ane_solo_tps / maxTps * 100).toFixed(0)}%">${data.ane_solo_tps} t/s</div>
+      </div>
+      <div class="bar-delta" style="color:var(--text-dim)">baseline</div>
+    </div>
+    <div class="bar-group">
+      <div class="bar-label">ANE CONCURRENT</div>
+      <div class="bar-container">
+        <div class="bar ane-conc" style="width: ${(data.ane_conc_tps / maxTps * 100).toFixed(0)}%">${data.ane_conc_tps} t/s</div>
+      </div>
+      <div class="bar-delta" style="color:${aneDelta >= -5 ? 'var(--green)' : aneDelta >= -20 ? 'var(--orange)' : 'var(--red)'}">
+        ${aneDelta > 0 ? '+' : ''}${aneDelta}%
+      </div>
+    </div>
+  `;
+
+  // Verdict
+  const verdict = document.getElementById('verdict');
+  const avgDelta = (Math.abs(mlxDelta) + Math.abs(aneDelta)) / 2;
+  if (avgDelta < 15) {
+    verdict.className = 'verdict confirmed';
+    verdict.innerHTML = `
+      <div class="verdict-icon">✅</div>
+      <div class="verdict-text">HYPOTHESIS CONFIRMED</div>
+      <div class="verdict-detail">GPU and Neural Engine operate as independent compute paths with minimal interference (avg ${avgDelta.toFixed(1)}% delta)</div>
+    `;
+  } else if (avgDelta < 30) {
+    verdict.className = 'verdict partial';
+    verdict.innerHTML = `
+      <div class="verdict-icon">⚠️</div>
+      <div class="verdict-text">PARTIAL — SOME INTERFERENCE</div>
+      <div class="verdict-detail">Both paths completed but with noticeable performance impact (avg ${avgDelta.toFixed(1)}% delta)</div>
+    `;
+  } else {
+    verdict.className = 'verdict rejected';
+    verdict.innerHTML = `
+      <div class="verdict-icon">❌</div>
+      <div class="verdict-text">HYPOTHESIS REJECTED</div>
+      <div class="verdict-detail">Significant resource contention detected (avg ${avgDelta.toFixed(1)}% delta)</div>
+    `;
+  }
+}
+
+function addHistoryRow(data) {
+  document.getElementById('historyCard').style.display = 'block';
+  const tbody = document.getElementById('historyBody');
+  const mlxDelta = data.mlx_solo > 0 ? ((data.mlx_conc - data.mlx_solo) / data.mlx_solo * 100).toFixed(1) : '?';
+  const aneDelta = data.ane_solo > 0 ? ((data.ane_conc - data.ane_solo) / data.ane_solo * 100).toFixed(1) : '?';
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${data.prompt}...</td>
+    <td class="gpu-val">${data.mlx_solo}</td>
+    <td class="gpu-val">${data.mlx_conc}</td>
+    <td style="color:${parseFloat(mlxDelta) >= -10 ? 'var(--green)' : 'var(--orange)'}">${mlxDelta}%</td>
+    <td class="ane-val">${data.ane_solo}</td>
+    <td class="ane-val">${data.ane_conc}</td>
+    <td style="color:${parseFloat(aneDelta) >= -10 ? 'var(--green)' : 'var(--orange)'}">${aneDelta}%</td>
+  `;
+  tbody.appendChild(row);
+}
+
+function resetPanels() {
+  for (const prefix of ['gpu', 'ane']) {
+    document.getElementById(`${prefix}Tps`).textContent = '—';
+    document.getElementById(`${prefix}Time`).textContent = '—';
+    document.getElementById(`${prefix}Tokens`).textContent = '—';
+    document.getElementById(`${prefix}Response`).textContent = 'Running...';
+    document.getElementById(`${prefix}TpsDelta`).textContent = '';
+    setStatus(`${prefix}Status`, 'IDLE', 'idle');
+  }
+  document.getElementById('chipGpu').classList.remove('active');
+  document.getElementById('chipAne').classList.remove('active');
+}
+
+function setStatus(id, text, cls) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = `status-badge ${cls}`;
+}
+
+function log(msg, cls = '') {
+  const card = document.getElementById('logCard');
+  const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="log-time">${time}</span> <span class="log-${cls}">${msg}</span>`;
+  card.appendChild(entry);
+  card.scrollTop = card.scrollHeight;
+}
+
+function runTest() {
+  if (running || !ws) return;
+  const idx = parseInt(document.getElementById('promptSelect').value);
+  ws.send(JSON.stringify({ cmd: 'run_test', prompt_idx: idx }));
+}
+
+function runMulti() {
+  if (running || !ws) return;
+  ws.send(JSON.stringify({ cmd: 'run_multi' }));
+}
+
+function switchAneModel(model) {
+  if (!ws) return;
+  ws.send(JSON.stringify({ cmd: 'set_ane_model', model }));
+  const labels = {
+    'qwen-0.5b': { chip: 'CoreML · Qwen 0.5B', panel: 'Qwen 2.5 0.5B · CoreML · ANE' },
+    'llama-1b':  { chip: 'CoreML · Llama 1B',   panel: 'Llama 3.2 1B · CoreML · ANE' },
+    'qwen-3b':   { chip: 'CoreML · Qwen 3B',   panel: 'Qwen 2.5 3B · CoreML · ANE' },
+  };
+  const lbl = labels[model] || labels['llama-1b'];
+  document.querySelector('#chipAne .block-detail').textContent = lbl.chip;
+  document.querySelector('.panel.ane .model-name').textContent = lbl.panel;
+  log(`ANE model switched to ${model}`, 'ok');
+}
+
+function showTimeline() {
+  const card = document.getElementById('timelineCard');
+  const chart = document.getElementById('timelineChart');
+  if (!soloData.mlx || !soloData.ane || !concData.mlx || !concData.ane) return;
+
+  card.style.display = 'block';
+
+  const gpuSoloTime = parseFloat(soloData.mlx.time_s) || 0;
+  const aneSoloTime = parseFloat(soloData.ane.time_s) || 0;
+  const gpuConcTime = parseFloat(concData.mlx.time_s) || 0;
+  const aneConcTime = parseFloat(concData.ane.time_s) || 0;
+
+  const maxTime = Math.max(gpuSoloTime, aneSoloTime, gpuConcTime, aneConcTime, 1);
+
+  function barPct(t) { return Math.max(8, (t / maxTime * 100)).toFixed(1); }
+
+  chart.innerHTML = `
+    <div style="display: flex; gap: 6px; margin-bottom: 4px;">
+      <div style="width: 50px;"></div>
+      <div style="flex: 1; text-align: center; font-size: 9px; letter-spacing: 2px; color: var(--text-dim);">SOLO PHASE</div>
+      <div style="flex: 1; text-align: center; font-size: 9px; letter-spacing: 2px; color: var(--text-dim);">CONCURRENT PHASE</div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-label gpu">GPU</div>
+      <div class="timeline-track">
+        <div class="timeline-phase-group">
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar-fill gpu animate" style="width: ${barPct(gpuSoloTime)}%">${gpuSoloTime}s</div>
+          </div>
+        </div>
+        <div class="timeline-phase-group">
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar-fill gpu animate" style="width: ${barPct(gpuConcTime)}%">${gpuConcTime}s</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-label ane">ANE</div>
+      <div class="timeline-track">
+        <div class="timeline-phase-group">
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar-fill ane animate" style="width: ${barPct(aneSoloTime)}%">${aneSoloTime}s</div>
+          </div>
+        </div>
+        <div class="timeline-phase-group">
+          <div class="timeline-bar-bg">
+            <div class="timeline-bar-fill ane animate" style="width: ${barPct(aneConcTime)}%">${aneConcTime}s</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function showBreakdown() {
+  const card = document.getElementById('breakdownCard');
+  const grid = document.getElementById('breakdownGrid');
+  if (!concData.mlx || !concData.ane) return;
+
+  card.style.display = 'block';
+
+  const ane = concData.ane;
+  const gpu = concData.mlx;
+
+  // ANE pipeline details
+  const anePrefillTps = ane.prefill_tps || '—';
+  const anePrefillMs = ane.prefill_ms || '—';
+  const aneDecodeTps = ane.decode_tps || ane.tok_per_sec || '—';
+  const aneLoadTime = ane.load_time_s || '—';
+
+  // GPU pipeline details
+  const gpuTps = gpu.tok_per_sec || '—';
+  const gpuTokens = gpu.tokens || '—';
+  const gpuTime = gpu.time_s || '—';
+
+  // Efficiency metrics
+  const gpuTpsNum = parseFloat(gpu.tok_per_sec) || 0;
+  const aneTpsNum = parseFloat(ane.tok_per_sec) || 0;
+  const combinedTps = (gpuTpsNum + aneTpsNum).toFixed(1);
+
+  // Estimate memory efficiency (rough: assume ~5.2GB GPU + ~0.8GB ANE on 16GB)
+  const estMemGB = 6.0;
+  const memEfficiency = estMemGB > 0 ? (parseFloat(combinedTps) / estMemGB).toFixed(1) : '—';
+
+  // Prefill/decode bar proportions
+  const prefillMsNum = parseFloat(ane.prefill_ms) || 0;
+  const totalAneMs = parseFloat(ane.time_s) * 1000 || 1;
+  const prefillPct = Math.min(95, Math.max(5, (prefillMsNum / totalAneMs * 100))).toFixed(0);
+  const decodePct = (100 - parseFloat(prefillPct)).toFixed(0);
+
+  grid.innerHTML = `
+    <div class="breakdown-col">
+      <h4 class="ane">ANE PIPELINE</h4>
+      <div class="breakdown-row">
+        <span class="bd-label">Model Load</span>
+        <span class="bd-value ane">${aneLoadTime}${aneLoadTime !== '—' ? 's' : ''}</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="bd-label">Prefill</span>
+        <span class="bd-value ane">${anePrefillMs}${anePrefillMs !== '—' ? 'ms' : ''} ${anePrefillTps !== '—' ? '(' + anePrefillTps + ' tok/s)' : ''}</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="bd-label">Decode</span>
+        <span class="bd-value ane">${aneDecodeTps} tok/s</span>
+      </div>
+      <div class="ane-prefill-bar">
+        <div class="prefill-seg" style="width: ${prefillPct}%"></div>
+        <div class="decode-seg" style="width: ${decodePct}%"></div>
+      </div>
+      <div class="ane-bar-legend">
+        <span>prefill ${prefillPct}%</span>
+        <span>decode ${decodePct}%</span>
+      </div>
+    </div>
+    <div class="breakdown-col">
+      <h4 class="gpu">GPU PIPELINE</h4>
+      <div class="breakdown-row">
+        <span class="bd-label">Prompt Tokens</span>
+        <span class="bd-value gpu">${gpuTokens}</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="bd-label">Generation</span>
+        <span class="bd-value gpu">${gpuTps} tok/s</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="bd-label">Total Time</span>
+        <span class="bd-value gpu">${gpuTime}s</span>
+      </div>
+      <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);">
+        <h4 class="eff" style="margin-bottom: 8px;">EFFICIENCY</h4>
+        <div class="breakdown-row">
+          <span class="bd-label">Combined Throughput</span>
+          <span class="bd-value eff">${combinedTps} tok/s</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="bd-label">Model Capacity</span>
+          <span class="bd-value eff">9B + 1B = 10B</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="bd-label">Memory Efficiency</span>
+          <span class="bd-value eff">${memEfficiency} tok/s/GB</span>
+        </div>
+        <div style="font-size: 9px; color: var(--text-dim); margin-top: 8px; line-height: 1.4;">
+          ANE runs at near-zero GPU power draw, enabling true parallel inference on unified memory.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Check which ANE models are ready on load
+fetch('/api/ane-models').then(r => r.json()).then(data => {
+  const sel = document.getElementById('aneModelSelect');
+  for (const opt of sel.options) {
+    const key = opt.value;
+    if (data.models[key] && !data.models[key].ready) {
+      opt.textContent += ' (converting...)';
+      opt.disabled = true;
+    }
+  }
+  if (data.active) {
+    sel.value = data.active;
+    switchAneModel(data.active);
+  }
+}).catch(() => {});
+
+connect();
+</script>
+</body>
+</html>
