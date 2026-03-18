@@ -1,5 +1,12 @@
 # Dual-Path Inference: GPU + Neural Engine on Apple Silicon
 
+> **Archived.** This was the initial proof-of-concept (March 2026). The work evolved significantly and now lives in [orion-ane](https://github.com/MidasMulli/orion-ane):
+> - **Dual inference engine** with smart routing (7 scenarios, 1.14x speedup): [`orion-ane/dual_inference/`](https://github.com/MidasMulli/orion-ane/tree/main/dual_inference)
+> - **Memory daemon** with continuous enrichment (the real ANE value proposition): [`orion-ane/memory/`](https://github.com/MidasMulli/orion-ane/tree/main/memory)
+> - **Key discovery:** Metal GPU is physically single-threaded — ANE is the only path to true parallelism on Apple Silicon.
+
+---
+
 Run two LLMs simultaneously on one chip — GPU cores for heavy inference, Neural Engine for lightweight tasks. No resource contention.
 
 ## Results
