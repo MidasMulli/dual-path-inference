@@ -19,7 +19,7 @@ Run two LLMs simultaneously on one chip — GPU cores for heavy inference, Neura
 | ANE (1B) | 53.8 tok/s | 45.7 tok/s | -0.4% to +1.3% |
 | **Combined** | 77.2 tok/s | **65.6 tok/s** | |
 
-ANE throughput is unaffected by concurrent GPU load. GPU throughput drops ~15% — likely memory bandwidth contention on the shared bus, not compute interference. Single-run measurements via the dashboard (solo baseline, then concurrent). Results vary by ±2-3 tok/s across runs.
+ANE throughput is unaffected by concurrent GPU load. GPU throughput drops ~15% — likely memory bandwidth contention on the shared bus, not compute interference. Single-run measurements via the dashboard (solo baseline, then concurrent). Results vary by ±2-3 tok/s across runs (±10-12% on a ~23 tok/s baseline).
 
 **[View full interactive results →](results.html)** (open locally after cloning)
 
