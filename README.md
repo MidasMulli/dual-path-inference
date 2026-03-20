@@ -1,17 +1,17 @@
 # Dual-Path Inference: GPU + Neural Engine on Apple Silicon
 
-> **Archived.** This was the initial proof-of-concept (March 2026). The work evolved significantly and now lives in [orion-ane](https://github.com/MidasMulli/orion-ane):
-> - **Dual inference engine** with smart routing (7 scenarios, 1.14x speedup): [`orion-ane/dual_inference/`](https://github.com/MidasMulli/orion-ane/tree/main/dual_inference)
-> - **Memory daemon** with continuous enrichment (the real ANE value proposition): [`orion-ane/memory/`](https://github.com/MidasMulli/orion-ane/tree/main/memory)
-> - **Key discovery:** Metal GPU is physically single-threaded — ANE is the only path to true parallelism on Apple Silicon.
+> **Archived.** This was the initial proof-of-concept (March 2026). The work evolved into:
+> - [orion-ane](https://github.com/MidasMulli/orion-ane) — ANE training, persistent memory daemon, agent framework
+> - [four-path-mlx](https://github.com/MidasMulli/four-path-mlx) — Multi-source speculative decoding server
+> - [gdn-coreml](https://github.com/MidasMulli/gdn-coreml) — GatedDeltaNet SSM to CoreML converter
 
 ---
 
-Run two LLMs simultaneously on one chip — GPU cores for heavy inference, Neural Engine for lightweight tasks. No resource contention.
+Run two LLMs simultaneously on one chip — GPU cores for heavy inference, Neural Engine for lightweight tasks.
 
 ## Results
 
-**Qwen 3.5 9B (GPU/MLX) + Llama 3.2 1B (ANE/CoreML) running concurrently on MacBook Air M5 (16GB):**
+**Qwen 3.5 9B (GPU/MLX) + Llama 3.2 1B (ANE/CoreML) running concurrently:**
 
 | Path | Solo | Concurrent | Delta |
 |------|------|------------|-------|
@@ -19,16 +19,16 @@ Run two LLMs simultaneously on one chip — GPU cores for heavy inference, Neura
 | ANE (1B) | 53.8 tok/s | 45.7 tok/s | -0.4% to +1.3% |
 | **Combined** | 77.2 tok/s | **65.6 tok/s** | |
 
-The Neural Engine barely notices the GPU running. Combined throughput of 65.6 tok/s from two models at 6.6GB total memory.
+ANE throughput is unaffected by concurrent GPU load. GPU throughput drops ~15% — likely memory bandwidth contention on the shared bus, not compute interference. Single-run measurements via the dashboard (solo baseline, then concurrent). Results vary by ±2-3 tok/s across runs.
 
 **[View full interactive results →](results.html)** (open locally after cloning)
 
-## What We Observed
+## What we observed
 
-1. **Independent silicon paths** — GPU and Neural Engine are separate compute blocks with near-zero mutual interference
+1. **Near-independent silicon paths** — GPU and ANE are separate compute blocks sharing only the memory bus. ANE interference: <1.3%. GPU interference: ~15%, attributable to memory bandwidth sharing.
 2. **Dual-model inference works** — 9B + 1B coexist at ~6.6GB combined, well within 16GB
-3. **ANE power efficiency** — 1B at 53.8 tok/s using ~2W vs 9B at 19.9 tok/s using ~15-20W (the tok/s difference is model size, not hardware speed — the power gap is the real insight)
-4. **Model loading is the bottleneck** — ANE decode is 53.8 tok/s but subprocess init adds ~5s overhead; a persistent server would fix this
+3. **ANE power efficiency** — 1B at 53.8 tok/s using ~2W vs 9B at 19.9 tok/s using ~15-20W. The tok/s difference is model size, not hardware speed — the power gap is the real insight.
+4. **Model loading is the bottleneck** — ANE decode is 53.8 tok/s but subprocess init adds ~5s overhead; a persistent server fixes this (implemented in [orion-ane](https://github.com/MidasMulli/orion-ane))
 
 ## Architecture
 
@@ -47,7 +47,7 @@ The Neural Engine barely notices the GPU running. Combined throughput of 65.6 to
 └─────────────────────────────────────────────────┘
 ```
 
-## Quick Start
+## Quick start
 
 ### Prerequisites
 - Mac with Apple Silicon (M1-M5)
@@ -66,7 +66,6 @@ python -m mlx_lm server \
 
 ### 2. Set up ANEMLL model
 ```bash
-# Clone and set up ANEMLL
 git clone https://github.com/Anemll/Anemll.git anemll
 cd anemll && ./create_uv_env.sh && source env-anemll/bin/activate
 
@@ -87,7 +86,7 @@ Open `http://localhost:8430`, select your ANE model, pick a prompt, hit **RUN TE
 
 The dashboard runs solo baselines for each path, then concurrent execution, and shows the throughput comparison with interference delta.
 
-## ANE Models Tested
+## ANE models tested
 
 | Model | ANE tok/s | Size | Concurrent Delta | Verdict |
 |-------|-----------|------|-----------------|---------|
@@ -106,15 +105,20 @@ The dashboard runs solo baselines for each path, then concurrent execution, and 
 
 ## Hardware
 
-- MacBook Air M5, 16GB unified memory
-- 10 GPU cores, 16 Neural Engine cores
-- macOS Sequoia
+- MacBook Air M5, 16GB unified memory, 10 GPU cores, 16 Neural Engine cores
+- macOS 26.3 (Tahoe)
+- MLX 0.31.1, mlx-lm 0.31.1
+
+## Related
+
+- [orion-ane](https://github.com/MidasMulli/orion-ane) — ANE training + memory daemon + agent framework
+- [four-path-mlx](https://github.com/MidasMulli/four-path-mlx) — Multi-source speculative decoding (N-gram + PLD + ANE + GPU)
+- [gdn-coreml](https://github.com/MidasMulli/gdn-coreml) — GatedDeltaNet SSM to CoreML converter for same-family ANE drafting
 
 ## Credits
 
 - [MLX](https://github.com/ml-explore/mlx) — Apple's ML framework for GPU inference
 - [ANEMLL](https://github.com/Anemll/Anemll) — Neural Engine LLM inference
-- Built during a [Claude Code](https://claude.ai/claude-code) session
 
 ## License
 
