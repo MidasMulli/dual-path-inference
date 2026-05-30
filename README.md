@@ -1,13 +1,13 @@
 # Dual-Path Inference: GPU + Neural Engine on Apple Silicon
 
 > **Archived.** This was the initial proof-of-concept (March 2026). The work evolved into:
-> - [orion-ane](https://github.com/MidasMulli/cognitive-stack-ane) — ANE training, persistent memory daemon, agent framework
-> - [four-path-mlx](https://github.com/MidasMulli/four-path-mlx) — Multi-source speculative decoding server
-> - [gdn-coreml](https://github.com/MidasMulli/gdn-coreml) — GatedDeltaNet SSM to CoreML converter
+> - [orion-ane](https://github.com/MidasMulli/cognitive-stack-ane) - ANE training, persistent memory daemon, agent framework
+> - [four-path-mlx](https://github.com/MidasMulli/four-path-mlx) - Multi-source speculative decoding server
+> - [gdn-coreml](https://github.com/MidasMulli/gdn-coreml) - GatedDeltaNet SSM to CoreML converter
 
 ---
 
-Run two LLMs simultaneously on one chip — GPU cores for heavy inference, Neural Engine for lightweight tasks.
+Run two LLMs simultaneously on one chip - GPU cores for heavy inference, Neural Engine for lightweight tasks.
 
 ## Results
 
@@ -19,16 +19,16 @@ Run two LLMs simultaneously on one chip — GPU cores for heavy inference, Neura
 | ANE (1B) | 53.8 tok/s | 45.7 tok/s | -0.4% to +1.3% |
 | **Combined** | 77.2 tok/s | **65.6 tok/s** | |
 
-ANE throughput is unaffected by concurrent GPU load. GPU throughput drops ~15% — likely memory bandwidth contention on the shared bus, not compute interference. Single-run measurements via the dashboard (solo baseline, then concurrent). Results vary by ±2-3 tok/s across runs (±10-12% on a ~23 tok/s baseline).
+ANE throughput is unaffected by concurrent GPU load. GPU throughput drops ~15% - likely memory bandwidth contention on the shared bus, not compute interference. Single-run measurements via the dashboard (solo baseline, then concurrent). Results vary by ±2-3 tok/s across runs (±10-12% on a ~23 tok/s baseline).
 
 **[View full interactive results →](results.html)** (open locally after cloning)
 
 ## What we observed
 
-1. **Near-independent silicon paths** — GPU and ANE are separate compute blocks sharing only the memory bus. ANE interference: <1.3%. GPU interference: ~15%, attributable to memory bandwidth sharing.
-2. **Dual-model inference works** — 9B + 1B coexist at ~6.6GB combined, well within 16GB
-3. **ANE power efficiency** — 1B at 53.8 tok/s using ~2W vs 9B at 19.9 tok/s using ~15-20W. The tok/s difference is model size, not hardware speed — the power gap is the real insight.
-4. **Model loading is the bottleneck** — ANE decode is 53.8 tok/s but subprocess init adds ~5s overhead; a persistent server fixes this (implemented in [orion-ane](https://github.com/MidasMulli/cognitive-stack-ane))
+1. **Near-independent silicon paths** - GPU and ANE are separate compute blocks sharing only the memory bus. ANE interference: <1.3%. GPU interference: ~15%, attributable to memory bandwidth sharing.
+2. **Dual-model inference works** - 9B + 1B coexist at ~6.6GB combined, well within 16GB
+3. **ANE power efficiency** - 1B at 53.8 tok/s using ~2W vs 9B at 19.9 tok/s using ~15-20W. The tok/s difference is model size, not hardware speed - the power gap is the real insight.
+4. **Model loading is the bottleneck** - ANE decode is 53.8 tok/s but subprocess init adds ~5s overhead; a persistent server fixes this (implemented in [orion-ane](https://github.com/MidasMulli/cognitive-stack-ane))
 
 ## Architecture
 
@@ -111,14 +111,14 @@ The dashboard runs solo baselines for each path, then concurrent execution, and 
 
 ## Related
 
-- [orion-ane](https://github.com/MidasMulli/cognitive-stack-ane) — ANE training + memory daemon + agent framework
-- [four-path-mlx](https://github.com/MidasMulli/four-path-mlx) — Multi-source speculative decoding (N-gram + PLD + ANE + GPU)
-- [gdn-coreml](https://github.com/MidasMulli/gdn-coreml) — GatedDeltaNet SSM to CoreML converter for same-family ANE drafting
+- [orion-ane](https://github.com/MidasMulli/cognitive-stack-ane) - ANE training + memory daemon + agent framework
+- [four-path-mlx](https://github.com/MidasMulli/four-path-mlx) - Multi-source speculative decoding (N-gram + PLD + ANE + GPU)
+- [gdn-coreml](https://github.com/MidasMulli/gdn-coreml) - GatedDeltaNet SSM to CoreML converter for same-family ANE drafting
 
 ## Credits
 
-- [MLX](https://github.com/ml-explore/mlx) — Apple's ML framework for GPU inference
-- [ANEMLL](https://github.com/Anemll/Anemll) — Neural Engine LLM inference
+- [MLX](https://github.com/ml-explore/mlx) - Apple's ML framework for GPU inference
+- [ANEMLL](https://github.com/Anemll/Anemll) - Neural Engine LLM inference
 
 ## License
 
