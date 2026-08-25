@@ -1,0 +1,1361 @@
+{
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "nodes": [
+    {
+      "id": "dual_test",
+      "label": "dual_test.py",
+      "file_type": "code",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "dual_test_run_mlx_inference",
+      "label": "run_mlx_inference()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L27",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "dual_test_run_ane_inference",
+      "label": "run_ane_inference()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L59",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "dual_test_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L130",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "dual_test_rationale_60",
+      "label": "Path B: Neural Engine via ANEMLL",
+      "file_type": "rationale",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L60",
+      "_origin": "ast"
+    },
+    {
+      "id": "server",
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_broadcast",
+      "label": "broadcast()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L59",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_run_mlx_inference",
+      "label": "run_mlx_inference()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L67",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_run_ane_inference",
+      "label": "run_ane_inference()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L99",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_system_stats",
+      "label": "get_system_stats()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L180",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_handle_ws",
+      "label": "handle_ws()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L227",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_run_full_test",
+      "label": "run_full_test()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L259",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_run_multi_prompt_test",
+      "label": "run_multi_prompt_test()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L307",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_handle_stats",
+      "label": "handle_stats()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L333",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_handle_ane_models",
+      "label": "handle_ane_models()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L337",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_handle_index",
+      "label": "handle_index()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L349",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_handle_results",
+      "label": "handle_results()",
+      "file_type": "code",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L353",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_68",
+      "label": "Synchronous MLX inference via HTTP API.",
+      "file_type": "rationale",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L68",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_100",
+      "label": "Synchronous ANE inference via ANEMLL subprocess.",
+      "file_type": "rationale",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L100",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_181",
+      "label": "Get CPU, memory, GPU stats.",
+      "file_type": "rationale",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L181",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_260",
+      "label": "Run solo baselines then concurrent test, streaming updates.",
+      "file_type": "rationale",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L260",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_308",
+      "label": "Run all test prompts sequentially for comprehensive results.",
+      "file_type": "rationale",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L308",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_338",
+      "label": "Return available ANE models and which are ready (meta.yaml exists).",
+      "file_type": "rationale",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L338",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme",
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "label": "Dual-Path Inference: GPU + Neural Engine on Apple Silicon",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_results",
+      "label": "Results",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L12",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_what_we_observed",
+      "label": "What we observed",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L26",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_architecture",
+      "label": "Architecture",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L33",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_quick_start",
+      "label": "Quick start",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L50",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_prerequisites",
+      "label": "Prerequisites",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L52",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_1_start_mlx_server",
+      "label": "1. Start MLX server",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L58",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_2_set_up_anemll_model",
+      "label": "2. Set up ANEMLL model",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L67",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_3_configure_and_run_dashboard",
+      "label": "3. Configure and run dashboard",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L76",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_4_run_tests",
+      "label": "4. Run tests",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L84",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_ane_models_tested",
+      "label": "ANE models tested",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L89",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_files",
+      "label": "Files",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L97",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_hardware",
+      "label": "Hardware",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L106",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_related",
+      "label": "Related",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L112",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_credits",
+      "label": "Credits",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L118",
+      "_origin": "ast"
+    },
+    {
+      "id": "readme_license",
+      "label": "License",
+      "file_type": "document",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L123",
+      "_origin": "ast"
+    },
+    {
+      "id": "results",
+      "label": "RESULTS.md",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_dual_path_inference_results_analysis",
+      "label": "Dual-Path Inference: Results & Analysis",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_hypothesis",
+      "label": "Hypothesis",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L9",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_result_hypothesis_confirmed",
+      "label": "Result: ✅ HYPOTHESIS CONFIRMED",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L13",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_architecture",
+      "label": "Architecture",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L19",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_test_methodology",
+      "label": "Test Methodology",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L39",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_results_0_5b_on_ane_working_config",
+      "label": "Results: 0.5B on ANE (Working Config)",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L48",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_previous_run_200_tokens",
+      "label": "Previous Run (200 tokens)",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L62",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_results_3b_on_ane_memory_constrained",
+      "label": "Results: 3B on ANE (Memory-Constrained)",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L71",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_what_this_proves",
+      "label": "What This Proves",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L86",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_1_independent_silicon_paths_are_real",
+      "label": "1. Independent Silicon Paths Are Real",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L88",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_2_dual_model_inference_works_on_consumer_hardware",
+      "label": "2. Dual-Model Inference Works on Consumer Hardware",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L91",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_3_ane_is_fast_for_small_models",
+      "label": "3. ANE Is Fast for Small Models",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L94",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_4_memory_not_compute_is_the_16gb_bottleneck",
+      "label": "4. Memory, Not Compute, Is the 16GB Bottleneck",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L97",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_practical_applications",
+      "label": "Practical Applications",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L100",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_near_term_16_gb",
+      "label": "Near-term (16 GB)",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L102",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_with_32_gb_air",
+      "label": "With 32 GB Air",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L107",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_technical_stack",
+      "label": "Technical Stack",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L112",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_files",
+      "label": "Files",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L122",
+      "_origin": "ast"
+    },
+    {
+      "id": "results_what_s_next",
+      "label": "What's Next",
+      "file_type": "document",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L132",
+      "_origin": "ast"
+    }
+  ],
+  "links": [
+    {
+      "source": "dual_test",
+      "target": "subprocess",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test",
+      "target": "threading",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test",
+      "target": "time",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test",
+      "target": "json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test",
+      "target": "urllib_request",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test",
+      "target": "os",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test",
+      "target": "dual_test_run_mlx_inference",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test",
+      "target": "dual_test_run_ane_inference",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test",
+      "target": "dual_test_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L130",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test_main",
+      "target": "dual_test_run_mlx_inference",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L146",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test_main",
+      "target": "dual_test_run_ane_inference",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L157",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "dual_test_rationale_60",
+      "target": "dual_test_run_ane_inference",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/dual_test.py",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "asyncio",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "os",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "subprocess",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "time",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "re",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "urllib_request",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "pathlib",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "aiohttp",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_broadcast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_run_mlx_inference",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_run_ane_inference",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L99",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_system_stats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L180",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_handle_ws",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L227",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_run_full_test",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L259",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_run_multi_prompt_test",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L307",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_handle_stats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L333",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_handle_ane_models",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L337",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_handle_index",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L349",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_handle_results",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L353",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_handle_ws",
+      "target": "server_run_full_test",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L240",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_handle_ws",
+      "target": "server_run_multi_prompt_test",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L243",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_handle_ws",
+      "target": "server_broadcast",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L250",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_run_full_test",
+      "target": "server_broadcast",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L263",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_run_full_test",
+      "target": "server_run_mlx_inference",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L270",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_run_full_test",
+      "target": "server_run_ane_inference",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L275",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_run_multi_prompt_test",
+      "target": "server_broadcast",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L311",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_run_multi_prompt_test",
+      "target": "server_run_mlx_inference",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L314",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_run_multi_prompt_test",
+      "target": "server_run_ane_inference",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L315",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_handle_stats",
+      "target": "server_get_system_stats",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L334",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_68",
+      "target": "server_run_mlx_inference",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_100",
+      "target": "server_run_ane_inference",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_181",
+      "target": "server_get_system_stats",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L181",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_260",
+      "target": "server_run_full_test",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L260",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_308",
+      "target": "server_run_multi_prompt_test",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L308",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_338",
+      "target": "server_handle_ane_models",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/server.py",
+      "source_location": "L338",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme",
+      "target": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "target": "readme_results",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "target": "readme_what_we_observed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "target": "readme_architecture",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "target": "readme_quick_start",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_quick_start",
+      "target": "readme_prerequisites",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_quick_start",
+      "target": "readme_1_start_mlx_server",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_quick_start",
+      "target": "readme_2_set_up_anemll_model",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_quick_start",
+      "target": "readme_3_configure_and_run_dashboard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_quick_start",
+      "target": "readme_4_run_tests",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "target": "readme_ane_models_tested",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "target": "readme_files",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L97",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "target": "readme_hardware",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L106",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "target": "readme_related",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L112",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "target": "readme_credits",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L118",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "readme_dual_path_inference_gpu_neural_engine_on_apple_silicon",
+      "target": "readme_license",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/README.md",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results",
+      "target": "results_dual_path_inference_results_analysis",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_hypothesis",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_result_hypothesis_confirmed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_architecture",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_test_methodology",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_results_0_5b_on_ane_working_config",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_results_0_5b_on_ane_working_config",
+      "target": "results_previous_run_200_tokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L62",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_results_3b_on_ane_memory_constrained",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_what_this_proves",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L86",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_what_this_proves",
+      "target": "results_1_independent_silicon_paths_are_real",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L88",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_what_this_proves",
+      "target": "results_2_dual_model_inference_works_on_consumer_hardware",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L91",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_what_this_proves",
+      "target": "results_3_ane_is_fast_for_small_models",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_what_this_proves",
+      "target": "results_4_memory_not_compute_is_the_16gb_bottleneck",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L97",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_practical_applications",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_practical_applications",
+      "target": "results_near_term_16_gb",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L102",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_practical_applications",
+      "target": "results_with_32_gb_air",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_technical_stack",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L112",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_files",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L122",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "results_dual_path_inference_results_analysis",
+      "target": "results_what_s_next",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "dual-path-inference/RESULTS.md",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_origin": "ast"
+    }
+  ],
+  "directed": false
+}

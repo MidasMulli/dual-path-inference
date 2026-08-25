@@ -16,10 +16,10 @@ Run two LLMs simultaneously on one chip - GPU cores for heavy inference, Neural 
 | Path | Solo | Concurrent | Delta |
 |------|------|------------|-------|
 | GPU (9B) | 23.4 tok/s | 19.9 tok/s | -15.0% |
-| ANE (1B) | 53.8 tok/s | 45.7 tok/s | -0.4% to +1.3% |
+| ANE (1B) | 53.8 tok/s | 45.7 tok/s | -15.1% |
 | **Combined** | 77.2 tok/s | **65.6 tok/s** | |
 
-ANE throughput is unaffected by concurrent GPU load. GPU throughput drops ~15% - likely memory bandwidth contention on the shared bus, not compute interference. Single-run measurements via the dashboard (solo baseline, then concurrent). Results vary by ±2-3 tok/s across runs (±10-12% on a ~23 tok/s baseline).
+CORRECTION (2026-08-25): an earlier version of this table printed the ANE delta as "-0.4% to +1.3%", which contradicted its own solo/concurrent cells (53.8 -> 45.7 is -15.1%); the stale range came from a different, shorter run and should never have headlined this table. Both paths lose ~15% under concurrency. GPU throughput drops ~15% - likely memory bandwidth contention on the shared bus, not compute interference. Single-run measurements via the dashboard (solo baseline, then concurrent). Results vary by ±2-3 tok/s across runs (±10-12% on a ~23 tok/s baseline).
 
 **[View full interactive results →](results.html)** (open locally after cloning)
 
@@ -91,7 +91,7 @@ The dashboard runs solo baselines for each path, then concurrent execution, and 
 | Model | ANE tok/s | Size | Concurrent Delta | Verdict |
 |-------|-----------|------|-----------------|---------|
 | Qwen 2.5 0.5B | 72.6 | ~500MB | -6.3% | Fast but basic quality |
-| **Llama 3.2 1B** | **53.8** | **~1.4GB** | **-0.4% to +1.3%** | **Sweet spot** |
+| **Llama 3.2 1B** | **53.8** | **~1.4GB** | **-15.1%** | **Sweet spot** |
 | Qwen 2.5 3B | 13.0 | ~4.6GB | timeout | Too heavy for 16GB concurrent |
 
 ## Files

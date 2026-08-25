@@ -126,7 +126,7 @@ dual-path-inference/
 ├── server.py          # WebSocket server, inference orchestration
 ├── dashboard.html     # Interactive dashboard UI
 ├── RESULTS.md         # This file
-└── ../DUAL_PATH_INFERENCE_BRIEF.md  # Original project brief
+└── ./DUAL_PATH_INFERENCE_BRIEF.md  # Original project brief
 ```
 
 ## What's Next

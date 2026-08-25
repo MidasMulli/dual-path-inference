@@ -1,0 +1,37 @@
+{
+  "dual_path_results.json": {
+    "mtime": 1773671237.20744,
+    "ast_hash": "d1f93d900c4cd61206d22f03d2f90c5b",
+    "semantic_hash": ""
+  },
+  "dual_test.py": {
+    "mtime": 1773671210.4188848,
+    "ast_hash": "dad3d79e8572c1a072aa9769196f1154",
+    "semantic_hash": ""
+  },
+  "server.py": {
+    "mtime": 1773682664.1600802,
+    "ast_hash": "d121c80c34e610968e795f9f13d6505c",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1780179029.975273,
+    "ast_hash": "c1ebbf923373a139de7fe9653566f318",
+    "semantic_hash": ""
+  },
+  "RESULTS.md": {
+    "mtime": 1786317173.8545647,
+    "ast_hash": "8a26f9ad24fcd1241b5946f5fbe16f03",
+    "semantic_hash": ""
+  },
+  "dashboard.html": {
+    "mtime": 1773681935.705077,
+    "ast_hash": "517c031cc9df6ce2880595f42ede6a5b",
+    "semantic_hash": ""
+  },
+  "results.html": {
+    "mtime": 1773683115.0811079,
+    "ast_hash": "aa838963c9788fb53117e8aa2c4b00e8",
+    "semantic_hash": ""
+  }
+}

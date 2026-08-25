@@ -1,0 +1,44 @@
+{
+  "test_prompt": "What is an ISDA Master Agreement and why does it matter for OTC derivatives trading?",
+  "solo": {
+    "mlx_solo": {
+      "path": "GPU (MLX)",
+      "model": "mlx-community/Qwen3.5-9B-MLX-4bit",
+      "time_s": 7.81,
+      "tokens_generated": 200,
+      "prompt_tokens": 30,
+      "tok_per_sec": 25.6,
+      "response_preview": "### What is an ISDA Master Agreement?\n\nThe **ISDA Master Agreement** (Intercontinental Exchange, Inc. / International Swaps and Derivatives Association) is a standardized legal contract used globally to govern transactions in the **Over-the-Counter (OTC) derivatives** market.\n\nUnlike exchange-traded"
+    },
+    "ane_solo": {
+      "path": "Neural Engine (ANEMLL/CoreML)",
+      "model": "Qwen2.5-0.5B (ANE-optimized)",
+      "time_s": 6.33,
+      "tokens_generated": 119,
+      "tok_per_sec": 77.5,
+      "response_preview": "An ISDA Master Agreement is a legal document that outlines the terms and conditions of an OTC derivative transaction. It is a standard agreement that is used to ensure that both parties to the transaction are in agreement on the terms and conditions of the transaction. The ISDA Master Agreement is"
+    }
+  },
+  "concurrent": {
+    "ane": {
+      "path": "Neural Engine (ANEMLL/CoreML)",
+      "model": "Qwen2.5-0.5B (ANE-optimized)",
+      "time_s": 6.8,
+      "tokens_generated": 119,
+      "tok_per_sec": 68.0,
+      "response_preview": "An ISDA Master Agreement is a legal document that outlines the terms and conditions of an OTC derivative transaction. It is a standard agreement that is used to ensure that both parties to the transaction are in agreement on the terms and conditions of the transaction. The ISDA Master Agreement is"
+    },
+    "mlx": {
+      "path": "GPU (MLX)",
+      "model": "mlx-community/Qwen3.5-9B-MLX-4bit",
+      "time_s": 8.59,
+      "tokens_generated": 200,
+      "prompt_tokens": 30,
+      "tok_per_sec": 23.3,
+      "response_preview": "### What is an ISDA Master Agreement?\n\nThe **ISDA Master Agreement** (Intercontinental Exchange Group, formerly International Swaps and Derivatives Association) is a standardized legal contract used globally as the primary framework for trading **Over-the-Counter (OTC) derivatives**.\n\nUnlike exchang"
+    }
+  },
+  "total_concurrent_time": 8.59,
+  "hardware": "MacBook Air M5, 16GB",
+  "timestamp": "2026-03-16 09:27:17"
+}

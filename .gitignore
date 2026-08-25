@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .DS_Store
 *.log
+
+# Untracked brief moved here from the cowork root during the 2026-08-09 cleanup.
+# Topically at home; its example prompts are application-domain text. Listed so a
+# routine `git add .` cannot publish it.
+DUAL_PATH_INFERENCE_BRIEF.md
